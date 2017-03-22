@@ -1,3 +1,133 @@
-<h1>
-  {{title}}
-</h1>
+<div class="container">
+  <h2>Basic Table</h2>
+  <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#myModal">Create</button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Email</th>
+        <th>Action</th>
+        <th>Action2</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{user.firstname}}</td>
+        <td>{{user.lastname}}</td>
+        <td>{{user.email}}</td>
+        <td><button class="btn btn-primary" type="button" (click)="updateId(user.$key)" data-toggle="modal" data-target="#myModalEdit">Edit</button></td>
+        <td><button class="btn btn-primary" type="button" (click)="delete(user.$key)">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal create-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create a new User</h4>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="createForm" (ngSubmit)="create(createForm.value)">
+          <h3>Create User</h3>
+          <div class="form-group">
+            <label for="">Firstname</label>
+            <input type="text" class="form-control" id="firstname" placeholder="Type you firstname" [formControl]="createForm.controls['firstname']">
+          </div>
+          <div class="form-group">
+            <label for="">Lastname</label>
+            <input type="text" class="form-control" id="lastname" placeholder="Type you lastname" [formControl]="createForm.controls['lastname']">
+          </div>
+          <div class="form-group">
+            <label for="">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Type you email" [formControl]="createForm.controls['email']">
+          </div>
+          <button type="submit" [disabled]="!createForm.valid" class="btn btn-lg btn-success btn-block">Create User</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="myModalEdit" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal edit-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Edit User</h4>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="createForm" (ngSubmit)="edit(edita)">
+          <h3>Create User</h3>
+          <div class="form-group">
+            <label for="">Firstname</label>
+            <input type="text" class="form-control" id="firstname" placeholder="Type you firstname" [formControl]="createForm.controls['firstname']">
+          </div>
+          <div class="form-group">
+            <label for="">Lastname</label>
+            <input type="text" class="form-control" id="lastname" placeholder="Type you lastname" [formControl]="createForm.controls['lastname']">
+          </div>
+          <div class="form-group">
+            <label for="">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Type you email" [formControl]="createForm.controls['email']">
+          </div>
+          <button type="submit" [disabled]="!createForm.valid" class="btn btn-lg btn-success btn-block">Update User</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!--<div class="container">
+  <kendo-grid [data]="users" [height]="370">
+    <kendo-grid-column field="firstname" title="Firstname" width="100">
+    </kendo-grid-column>
+    <kendo-grid-column field="lastname" title="Lastname" width="250">
+    </kendo-grid-column>
+    <kendo-grid-column field="email" title="Email">
+    </kendo-grid-column>
+  </kendo-grid>
+</div>-->
+
+<kendo-grid
+          [data]="view | async"
+          [height]="400"
+          [pageSize]="gridState.take" [skip]="gridState.skip" [sort]="gridState.sort"
+          [pageable]="true" [sortable]="true"
+          (dataStateChange)="onStateChange($event)"
+          (edit)="editHandler($event)" (cancel)="cancelHandler($event)"
+          (save)="saveHandler($event)" (remove)="removeHandler($event)"
+          (add)="addHandler($event)"
+        >
+        <kendo-grid-toolbar>
+            <button kendoGridAddCommand>Add new</button>
+        </kendo-grid-toolbar>
+        <kendo-grid-column field="firstname" title="Firstname"></kendo-grid-column>
+        <kendo-grid-column field="lastname" title="Lastname"></kendo-grid-column>
+        <kendo-grid-column field="email" title="Email"></kendo-grid-column>
+        <kendo-grid-command-column title="command" width="220">
+            <template let-isNew="isNew">
+                <button kendoGridEditCommand class="k-primary">Edit</button>
+                <button kendoGridRemoveCommand>Remove</button>
+                <button kendoGridSaveCommand [disabled]="formGroup?.invalid">{{ isNew ? 'Add' : 'Update' }}</button>
+                <button kendoGridCancelCommand>{{ isNew ? 'Discard changes' : 'Cancel' }}</button>
+            </template>
+        </kendo-grid-command-column>
+      </kendo-grid>
